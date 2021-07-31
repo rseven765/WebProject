@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="diary">
+
+        <resultMap id="diary" type="diary.domain.DiaryVo">
+            <result property="userId"           column="USER_ID"/>
+            <result property="wdate"            column="WDATE"/>
+            <result property="title"            column="TITLE"/>
+            <result property="content"          column="CONTENT"/>
+            <result property="createUserId"     column="CREATE_USER_ID"/>
+            <result property="updateUserId"     column="UPDATE_USER_ID"/>
+            <result property="createDateTime"   column="CREATE_DATE_TIME"/>
+            <result property="updateDateTime"   column="UPDATE_DATE_TIME"/>
+        </resultMap>
+
+        <!-- 등록 -->
+        <insert id="create">
+            <![CDATA[
+            INSERT INTO TB_DIARY (
+                USER_ID
+                , WDATE
+                , TITLE
+                , CONTENT
+                , CREATE_USER_ID
+                , UPDATE_USER_ID
+                , CREATE_DATE_TIME
+                , UPDATE_DATE_TIME
+            ) VALUES (
+                #{userId}
+                , #{wdate}
+                , #{title}
+                , #{content}
+                , #{createUserId}
+                , #{updateUserId}
+                , #{createDateTime}
+                , #{updateDateTime}
+            )
+            ]]>
+        </insert>
+
+        <!-- 읽기 -->
+        <select id="read" resultMap="diary">
+            <![CDATA[
+            SELECT
+                USER_ID
+                , WDATE
+                , TITLE
+                , CONTENT
+                , CREATE_USER_ID
+                , UPDATE_USER_ID
+                , CREATE_DATE_TIME
+                , UPDATE_DATE_TIME
+            FROM TB_DIARY
+            WHERE USER_ID = #{userId} AND WDATE = #{wdate}
+            LIMIT 1
+            ]]>
+        </select>
+
+        <!-- 목록 -->
+        <select id="all" resultMap="diary">
+            <![CDATA[
+            SELECT
+                USER_ID
+                , WDATE
+                , TITLE
+                , CONTENT
+                , CREATE_USER_ID
+                , UPDATE_USER_ID
+                , CREATE_DATE_TIME
+                , UPDATE_DATE_TIME
+            FROM TB_DIARY
+            WHERE USER_ID IS NOT NULL
+            ]]>
+            <if test="userId != null and userId != ''">
+                <![CDATA[
+                AND USER_ID = #{userId}
+                ]]>
+            </if>
+            <if test="title != null and title != ''">
+                <![CDATA[
+                AND TITLE LIKE CONCAT('%', #{title}, '%')
+                ]]>
+            </if>
+            <![CDATA[
+            ORDER BY WDATE DESC
+            ]]>
+        </select>
+
+        <update id="update">
+            <![CDATA[
+            UPDATE TB_DIARY
+            SET UPDATE_DATE_TIME = #{updateDateTime}
+            ]]>
+            <if test="title != null and title != ''">
+                , TITLE = #{title}
+            </if>
+            <if test="content != null and content != ''">
+                , CONTENT = #{content}
+            </if>
+            <if test="wdate != null and wdate != ''">
+                , WDATE = #{wdate}
+            </if>
+            <![CDATA[
+            WHERE USER_ID = #{userId} AND WDATE = #{wdate}
+            LIMIT 1
+            ]]>
+        </update>
+
+        <delete id="delete">
+            <![CDATA[
+            DELETE FROM TB_DIARY
+            WHERE USER_ID = #{userId} AND WDATE = #{wdate}
+            LIMIT 1
+            ]]>
+        </delete>
+
+</mapper>

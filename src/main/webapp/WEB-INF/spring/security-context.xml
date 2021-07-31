@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xsi:schemaLocation="http://www.springframework.org/schema/mvc
+             http://www.springframework.org/schema/mvc/spring-mvc.xsd
+             http://www.springframework.org/schema/beans
+             http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <interceptors>
+        <!-- 사용자 로그인 -->
+        <interceptor>
+            <mapping path="/**"/>
+            <exclude-mapping path="/auth/login"/>
+            <exclude-mapping path="/auth/register"/>
+            <exclude-mapping path="/auth/logout"/>
+            <exclude-mapping path="/resources/**"/>
+            <beans:bean class="diary.interceptor.LoginInterceptor"/>
+        </interceptor>
+        <!-- 접근권한 -->
+        <interceptor>
+            <mapping path="/user/**"/>
+            <beans:bean class="diary.interceptor.AdminInterceptor"/>
+        </interceptor>
+    </interceptors>
+
+</beans:beans>
